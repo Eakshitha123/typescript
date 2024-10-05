@@ -4,44 +4,46 @@
 
 
 
-const addButton = document.getElementById("add-btn") as HTMLButtonElement;
-const inputField = document.getElementById("todo-input") as HTMLInputElement;
-const todoList = document.getElementById("todo-list") as HTMLUListElement;
+class TodoApp {
+    private addButton: HTMLButtonElement;
+    private inputField: HTMLInputElement;
+    private todoList: HTMLUListElement;
 
+    constructor() {
+        this.addButton = document.getElementById("add-btn") as HTMLButtonElement;
+        this.inputField = document.getElementById("todo-input") as HTMLInputElement;
+        this.todoList = document.getElementById("todo-list") as HTMLUListElement;
 
-function createTodoItem(task: string): void {
-    const listItem = document.createElement("li");
-    listItem.textContent = task;
+        this.addButton.onclick = () => this.addTodo();
+        this.inputField.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") this.addTodo();
+        });
+    }
 
-    
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete";
-    deleteButton.className = "delete-btn";
+    private addTodo() {
+        const task = this.inputField.value.trim();
+        if (task) {
+            const listItem = this.createTodoItem(task);
+            this.todoList.appendChild(listItem);
+            this.inputField.value = ""; // Clear input field
+        } else {
+            alert("Please enter a task!");
+        }
+    }
 
-    deleteButton.onclick = () => {
-        todoList.removeChild(listItem);
-    };
+    private createTodoItem(task: string): HTMLLIElement {
+        const listItem = document.createElement("li");
+        listItem.textContent = task;
 
- 
-    listItem.appendChild(deleteButton);
-    
-    todoList.appendChild(listItem);
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.className = "delete-btn";
+        deleteButton.onclick = () => this.todoList.removeChild(listItem);
+
+        listItem.appendChild(deleteButton);
+        return listItem;
+    }
 }
 
-addButton.onclick = () => {
-    const task = inputField.value.trim();
-    if (task) {
-        createTodoItem(task);
-        inputField.value = ""; 
-    } else {
-        alert("Please enter a task!");
-    }
-};
-
-
-
-inputField.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") {
-        addButton.click();
-    }
-});
+// Initialize the To-Do application
+new TodoApp();
